@@ -153,11 +153,11 @@ function print_session_list($courseid, $facetoface, $location) {
     $timenow = time();
 
     $context = context_course::instance($courseid);
-    $viewattendees = has_capability('mod/facetoface:viewattendees', $context);
-    $editsessions = has_capability('mod/facetoface:editsessions', $context);
-    $uploadbookings = has_capability('mod/facetoface:uploadbookings', $context);
+    $canviewattendees = has_capability('mod/facetoface:viewattendees', $context);
+    $caneditsessions = has_capability('mod/facetoface:editsessions', $context);
+    $canuploadbookings = has_capability('mod/facetoface:uploadbookings', $context);
     $multiplesignups = $facetoface->signuptype == MOD_FACETOFACE_SIGNUP_MULTIPLE;
-    $bulksignup = $facetoface->multiplesignupmethod == MOD_FACETOFACE_SIGNUP_MULTIPLE_PER_ACTIVITY;
+    $isbulksignup = $facetoface->multiplesignupmethod == MOD_FACETOFACE_SIGNUP_MULTIPLE_PER_ACTIVITY;
 
     $bookedsession = null;
     if ($submissions = facetoface_get_user_submissions($facetoface->id, $USER->id)) {
@@ -217,7 +217,7 @@ function print_session_list($courseid, $facetoface, $location) {
     // Upcoming sessions.
     echo $OUTPUT->heading(get_string('upcomingsessions', 'facetoface'));
 
-    if (!empty($upcomingarray) && $bulksignup) {
+    if (!empty($upcomingarray) && $isbulksignup) {
         $firstsession = $sessions[array_keys($sessions)[0]];
         $signupforstreamlink = html_writer::link(
             'signup.php?s=' . $firstsession->id . '&backtoallsessions=' . $session->facetoface,
@@ -233,14 +233,14 @@ function print_session_list($courseid, $facetoface, $location) {
         echo $f2frenderer->print_session_list_table(
             $customfields,
             $upcomingarray,
-            $viewattendees,
-            $editsessions,
-            !$bulksignup,
-            $uploadbookings
+            $canviewattendees,
+            $caneditsessions,
+            !$isbulksignup,
+            $canuploadbookings
         );
     }
 
-    if ($editsessions) {
+    if ($caneditsessions) {
         $addsessionlink = html_writer::link(
             new moodle_url('sessions.php', ['f' => $facetoface->id]),
             get_string('addsession', 'facetoface')
@@ -248,7 +248,7 @@ function print_session_list($courseid, $facetoface, $location) {
         echo html_writer::tag('p', $addsessionlink);
     }
 
-    if ($uploadbookings) {
+    if ($canuploadbookings) {
         $adduploadlink = html_writer::link(
             new moodle_url('upload.php', ['f' => $facetoface->id]),
             get_string('uploadbookings', 'facetoface')
@@ -262,10 +262,10 @@ function print_session_list($courseid, $facetoface, $location) {
         echo $f2frenderer->print_session_list_table(
             $customfields,
             $previousarray,
-            $viewattendees,
-            $editsessions,
+            $canviewattendees,
+            $caneditsessions,
             true,
-            $uploadbookings
+            $canuploadbookings
         );
     }
 }
