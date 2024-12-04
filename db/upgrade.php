@@ -859,5 +859,29 @@ function xmldb_facetoface_upgrade($oldversion=0) {
         upgrade_mod_savepoint(true, 2023100200, 'facetoface');
     }
 
+    if ($oldversion < 2024120400) {
+
+        // Define field addbbbclassroom to be added to facetoface.
+        $table = new xmldb_table('facetoface');
+        $field = new xmldb_field(
+            'addbbbclassroom',
+            XMLDB_TYPE_INTEGER,
+            '1',
+            true,
+            XMLDB_NOTNULL,
+            null,
+            '0',
+            'completionattendance'
+        );
+
+        // Conditionally launch add field addbbbclassroom.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Facetoface savepoint reached.
+        upgrade_mod_savepoint(true, 2024120400, 'facetoface');
+    }
+
     return $result;
 }

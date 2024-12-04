@@ -39,7 +39,8 @@ class mod_facetoface_renderer extends plugin_renderer_base {
         $viewattendees,
         $editsessions,
         $signuplinks = true,
-        $uploadbookings = false
+        $uploadbookings = false,
+        $joinbbb = false,
     ) {
         $output = '';
 
@@ -179,8 +180,9 @@ class mod_facetoface_renderer extends plugin_renderer_base {
                         ['title' => get_string('downloadexcel')]) . ' ';
                 $options .= $this->output->action_icon(new moodle_url('attendees.php', ['s' => $session->id, 'download' => 'ods']),
                         new pix_icon('f/calc', get_string('downloadods')), null,
-                        ['title' => get_string('downloadods')]) . ' ' . html_writer::empty_tag('br');
+                        ['title' => get_string('downloadods')]) . ' ';
             }
+
             if ($isbookedsession) {
                 $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface,
                         get_string('moreinfo', 'facetoface'),
@@ -196,6 +198,22 @@ class mod_facetoface_renderer extends plugin_renderer_base {
                 $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface,
                     get_string('signup', 'facetoface'));
             }
+
+            if ($status != get_string('sessionover', 'facetoface') && $joinbbb) {
+                // Show link to BBB room.
+                $addroomurl = new moodle_url('bbbrooms.php', ['s' => $session->id, 'backtoallsessions' => $session->facetoface]);
+                $icon = $this->output->pix_icon('e/forward', get_string('addbbb', 'facetoface'));
+                $icon .= get_string('accessbbbroom', 'facetoface');
+                $link = html_writer::link(
+                    $addroomurl,
+                    $icon,
+                    [
+                        'class' => 'ml-2',
+                    ]
+                );
+                $options .=  ' ' . $link;
+            }
+
             if (empty($options)) {
                 $options = get_string('none', 'facetoface');
             }
