@@ -268,6 +268,17 @@ class mod_facetoface_mod_form extends moodleform_mod {
         $mform->addHelpButton('cancellationinstrmngr', 'cancellationinstrmngr', 'facetoface');
         $mform->disabledIf('cancellationinstrmngr', 'emailmanagercancellation');
         $mform->setDefault('cancellationinstrmngr', get_string('setting:defaultcancellationinstrmngrdefault', 'facetoface'));
+
+        // Add BigBlueButton classroom.
+        $mform->addElement('header', 'bbbclassroom', get_string('bbbclassroom', 'facetoface'));
+        $mform->addElement('advcheckbox', 'addbbbclassroom', get_string('addbbbclassroom', 'facetoface'));
+        $mform->addHelpButton('addbbbclassroom', 'addbbbclassroom', 'facetoface');
+        $mform->setDefault('addbbbclassroom', true);
+
+        $mform->addElement('advcheckbox', 'addbbbcalendarevent', get_string('addbbbcalendarevent', 'facetoface'));
+        $mform->setDefault('addbbbcalendarevent', false);
+        $mform->disabledIf('addbbbcalendarevent', 'addbbbclassroom');
+
         $data = (object) ['confirmationmessage' => $confirmationmessagedata];
         $this->set_data($data);
         $features = new stdClass;

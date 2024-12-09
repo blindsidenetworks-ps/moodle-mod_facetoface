@@ -151,6 +151,7 @@ function print_session_list($courseid, $facetoface, $location) {
     $uploadbookings = has_capability('mod/facetoface:uploadbookings', $context);
     $multiplesignups = $facetoface->signuptype == MOD_FACETOFACE_SIGNUP_MULTIPLE;
     $bulksignup = $facetoface->multiplesignupmethod == MOD_FACETOFACE_SIGNUP_MULTIPLE_PER_ACTIVITY;
+    $bbbroom = $facetoface->addbbbclassroom;
 
     $bookedsession = null;
     if ($submissions = facetoface_get_user_submissions($facetoface->id, $USER->id)) {
@@ -229,7 +230,8 @@ function print_session_list($courseid, $facetoface, $location) {
             $viewattendees,
             $editsessions,
             !$bulksignup,
-            $uploadbookings
+            $uploadbookings,
+            $bbbroom,
         );
     }
 
