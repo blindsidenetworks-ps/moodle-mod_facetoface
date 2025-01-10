@@ -200,9 +200,9 @@ class mod_facetoface_renderer extends plugin_renderer_base {
             }
 
             if ($status != get_string('sessionover', 'facetoface') && $joinbbb) {
-                // Show link to BBB room.
-                $addroomurl = new moodle_url('bbbrooms.php', ['s' => $session->id, 'backtoallsessions' => $session->facetoface]);
-                $icon = $this->output->pix_icon('e/forward', get_string('addbbb', 'facetoface'));
+                // Set up BBB room and create link to access it.
+                $addroomurl = access_virtual_room($session);
+                $icon = $this->output->pix_icon('e/forward', get_string('accessbbbroom', 'facetoface'));
                 $icon .= get_string('accessbbbroom', 'facetoface');
                 $link = html_writer::link(
                     $addroomurl,
