@@ -4302,6 +4302,39 @@ function facetoface_get_all_user_name_fields($returnsql = false, $tableprefix = 
     return $ret;
 }
 
+/**
+ * Access BBB room from FacetoFace activity module session.
+ *
+ * @param object $session session object.
+ * @return string room url.
+ */
+function access_virtual_room($session) {
+    global $DB;
+    $facetoface = $DB->get_record('facetoface', ['id' => $session->facetoface]);
+    if (!$cm = get_coursemodule_from_instance('facetoface', $facetoface->id, $facetoface->course)) {
+        throw new moodle_exception('error:incorrectcoursemodule', 'facetoface');
+    }
+    $contextmodule = context_module::instance($cm->id);
+
+    // Get BBB room or create if it doesn't exist.
+    $roomname = get_string('bbbroomfor', 'facetoface', format_string($facetoface->name));
+    $room = \tool_bnbbb\room::get_or_create(
+        $contextmodule,
+        $session->id,
+        'mod_facetoface',
+        'session',
+        function() use ($roomname) {
+            return ['roomname' => $roomname];
+        }
+    );
+    // Pass any room specific settings from facetoface activity form.
+    $room->set_setting('room_enabled', $facetoface->addbbbclassroom);
+
+    // Generate link to room.
+    $roomurl = new moodle_url('/admin/tool/bnbbb/room.php', ['id' => $session->id]);
+    return $roomurl;
+}
+
 /*
  * facetoface assignment candidates
  */
